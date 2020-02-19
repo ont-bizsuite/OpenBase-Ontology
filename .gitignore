@@ -1,0 +1,8 @@
+/target/
+
+### IntelliJ IDEA ###
+.idea
+*.iml
+logs
+test
+wallet.json
