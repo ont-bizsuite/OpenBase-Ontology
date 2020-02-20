@@ -28,6 +28,7 @@ import org.springframework.util.StringUtils;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
 import java.util.*;
 
 /**
@@ -182,7 +183,7 @@ public class SDKUtil {
         return parseControllerFromDdo(res);
     }
 
-    private List<String> parseControllerFromDdo(String res) {
+    private List<String> parseControllerFromDdo(String res) throws UnsupportedEncodingException {
         byte[] bys = Helper.hexToBytes(res);
         ByteArrayInputStream bais = new ByteArrayInputStream(bys);
         BinaryReader br = new BinaryReader(bais);
@@ -215,9 +216,10 @@ public class SDKUtil {
                 log.info(controllerStr);
             } else {
                 JSONObject jsonObject = JSON.parseObject(controllerStr);
-                controllers = jsonObject.getObject("members", List.class);
-                for (String controller : controllers) {
-                    log.info(controller);
+                List<String> members = jsonObject.getObject("members", List.class);
+                for (String controller : members) {
+                    String ontId = Base64ConvertUtil.decode(controller);
+                    controllers.add(ontId);
                 }
             }
         }
