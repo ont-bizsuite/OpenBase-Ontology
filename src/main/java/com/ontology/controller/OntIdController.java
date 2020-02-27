@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 @Slf4j
@@ -59,10 +60,11 @@ public class OntIdController {
     @PostMapping("/data/multi/group")
     public Result registerMultiDataOntId(@Valid @RequestBody DataIdGroupControllerDto dto) throws Exception {
         String action = "registerMultiDataOntIdWithGroupController";
-        @NotEmpty List<String> userIdList = dto.getUserIdList();
-        @NotEmpty List<String> dataIdList = dto.getDataIdList();
+        List<String> userIdList = dto.getUserIdList();
+        List<String> dataIdList = dto.getDataIdList();
         String version = dto.getVersion() == null ? "" : dto.getVersion();
-        List<DataIdResp> dataOntId = ontIdService.registerMultiDataOntIdWithGroupController(action, userIdList, dataIdList, version);
+        Boolean isDataset = dto.getIsDataset();
+        List<DataIdResp> dataOntId = ontIdService.registerMultiDataOntIdWithGroupController(action, userIdList, dataIdList, version, isDataset);
         return new Result(action, ErrorInfo.SUCCESS.code(), ErrorInfo.SUCCESS.descEN(), dataOntId);
     }
 

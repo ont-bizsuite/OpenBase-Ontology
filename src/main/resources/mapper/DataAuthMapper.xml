@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ontology.mapper.DataAuthMapper">
+  <resultMap id="BaseResultMap" type="com.ontology.entity.DataAuth">
+    <id column="data_id" jdbcType="VARCHAR" property="dataId" />
+    <result column="version" jdbcType="VARCHAR" property="version" />
+    <result column="data_ont_id" jdbcType="VARCHAR" property="dataOntId" />
+    <result column="auth_id" jdbcType="VARCHAR" property="authId" />
+    <result column="download_url" jdbcType="VARCHAR" property="downloadUrl" />
+    <result column="state" jdbcType="INTEGER" property="state" />
+  </resultMap>
+
+  <update id="insertAuthId" parameterType="String">
+    update tbl_data_auth set auth_id = #{authId} where data_ont_id = #{dataOntId}
+  </update>
+</mapper>

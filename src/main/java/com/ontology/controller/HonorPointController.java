@@ -21,7 +21,7 @@ public class HonorPointController {
     @Autowired
     private HonorPointService honorPointService;
 
-    @ApiOperation(value = "register", notes = "register", httpMethod = "GET")
+    @ApiOperation(value = "queryPoint", notes = "queryPoint", httpMethod = "GET")
     @GetMapping
     public Result queryPoint(String userId) throws Exception {
         String action = "queryPoint";
@@ -29,14 +29,14 @@ public class HonorPointController {
         return new Result(action, ErrorInfo.SUCCESS.code(), ErrorInfo.SUCCESS.descEN(), point);
     }
 
-    @ApiOperation(value = "register", notes = "register", httpMethod = "POST")
+    @ApiOperation(value = "distributePoint", notes = "distributePoint", httpMethod = "POST")
     @PostMapping
-    public Result distribute(@Valid @RequestBody PointDto req) throws Exception {
+    public Result distribute(@Valid @RequestBody PointDto dto) throws Exception {
         String action = "distributePoint";
-        String dataId = req.getDataId();
-        String version = req.getVersion() == null ? "" : req.getVersion();
-        Long amount = req.getAmount();
-        String userId = req.getUserId();
+        String dataId = dto.getDataId();
+        String version = dto.getVersion() == null ? "" : dto.getVersion();
+        Long amount = dto.getAmount();
+        String userId = dto.getUserId();
         String hash = honorPointService.distribute(action, userId, dataId, version, amount);
         return new Result(action, ErrorInfo.SUCCESS.code(), ErrorInfo.SUCCESS.descEN(), ErrorInfo.SUCCESS.descEN());
     }

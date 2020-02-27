@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 @Service("ConfigParam")
 public class ConfigParam {
 
-	/**
+    /**
 	 *  SDK param
 	 */
 	@Value("${service.restfulUrl}")
@@ -35,4 +35,21 @@ public class ConfigParam {
 
 	@Value("${honor.point.wif}")
 	public String HONOR_POINT_WIF;
+
+	@Value("${oj.address}")
+	public String OJ_ADDRESS;
+
+	@Value("${mp.contract}")
+	public String MP_CONTRACT;
+
+	@Value("${data.token.contract}")
+	public String DATA_TOKEN_CONTRACT;
+
+	@Value("${jwt.issuer.ontid}")
+	public String JWT_ISSUER_ONTID;
+	@Value("${jwt.issuer.publickey}")
+	public String JWT_ISSUER_PUBLICKEY;
+	@Value("${jwt.issuer.wif}")
+	public String JWT_ISSUER_WIF;
+
 }

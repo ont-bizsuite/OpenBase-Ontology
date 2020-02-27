@@ -3,12 +3,16 @@ package com.ontology.service.impl;
 import com.alibaba.fastjson.JSON;
 import com.ontology.controller.vo.DataIdDto;
 import com.ontology.controller.vo.DataIdResp;
+import com.ontology.entity.DataAuth;
 import com.ontology.exception.OntIdException;
+import com.ontology.mapper.DataAuthMapper;
 import com.ontology.service.OntIdService;
+import com.ontology.thread.TxThread;
 import com.ontology.utils.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
@@ -18,9 +22,14 @@ import java.util.Map;
 
 @Service
 @Slf4j
+@Transactional(rollbackFor = Exception.class)
 public class OntIdServiceImpl implements OntIdService {
     @Autowired
     private SDKUtil sdkUtil;
+    @Autowired
+    private TxThread txThread;
+    @Autowired
+    private DataAuthMapper dataAuthMapper;
 
     private RootKey rootKey = RootKeyUtil.rootKey;
 
@@ -124,7 +133,8 @@ public class OntIdServiceImpl implements OntIdService {
     }
 
     @Override
-    public List<DataIdResp> registerMultiDataOntIdWithGroupController(String action, List<String> userIdList, List<String> dataIdList, String version) throws Exception {
+    public List<DataIdResp> registerMultiDataOntIdWithGroupController(String action, List<String> userIdList, List<String> dataIdList, String version, Boolean isDataset) throws Exception {
+        Boolean registerDataset = false;
         List<String> controllers = new ArrayList<>();
         for (String userId : userIdList) {
             String[] userIds = new String[]{userId};
@@ -151,8 +161,39 @@ public class OntIdServiceImpl implements OntIdService {
             resp.setDataOntId(dataOntId);
             resps.add(resp);
 
+            if (isDataset) {
+                DataAuth record = dataAuthMapper.selectByPrimaryKey(dataId);
+                if (record == null) {
+                    DataAuth dataAuth = new DataAuth();
+                    dataAuth.setDataId(dataId);
+                    dataAuth.setVersion(version);
+                    dataAuth.setDataOntId(dataOntId);
+                    dataAuth.setState(1);
+                    dataAuthMapper.insertSelective(dataAuth);
+                    registerDataset = true;
+                } else {
+                    String oldVersion = record.getVersion();
+                    record.setVersion(version);
+                    record.setDataOntId(dataOntId);
+                    record.setState(1);
+                    dataAuthMapper.updateByPrimaryKeySelective(record);
+                    if (!version.equals(oldVersion)) {
+                        registerDataset = true;
+                    }
+                }
+
+            }
         }
-        String hash = sdkUtil.regIdWithGroup(dataOntIdList, controllers, controllers.get(0), userPk);
+        if (isDataset) {
+            // register dataset and auth download
+            if (registerDataset) {
+                String hash = sdkUtil.regIdAndAuth(dataOntIdList, controllers, controllers.get(0), userPk);
+                txThread.saveAuthId(hash);
+            }
+        } else {
+            // only register data
+            String hash = sdkUtil.regIdWithGroup(dataOntIdList, controllers, controllers.get(0), userPk);
+        }
         return resps;
     }
 }

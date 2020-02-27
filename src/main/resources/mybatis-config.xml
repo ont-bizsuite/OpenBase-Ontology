@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+
+	<settings>
+        <setting name="logPrefix" value="dao."/>
+	</settings>
+
+	<!-- 
+	<typeAliases>
+		<typeAlias alias="acctInfo" type="com.ontologyy.projects.domain.AcctInfo" />
+		<typeAlias alias="transinNotice" type="com.ontologyy.projects.domain.TransinNotice" />
+		<typeAlias alias="acctOprDtl" type="com.ontologyy.projects.domain.AcctOprDtl" />
+	</typeAliases>
+
+	<mappers>
+		<mapper resource="mybatis/mapper/transin_notice.xml" />
+		<mapper resource="mybatis/mapper/acctInfoMapper.xml" />
+		<mapper resource="mybatis/mapper/acctOprDtlMapper.xml" />
+	</mappers>
+	 -->
+</configuration>

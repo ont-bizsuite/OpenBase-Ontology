@@ -362,4 +362,116 @@ public class SDKUtil {
         ontSdk.addSign(tx, payerAcct);
         ontSdk.getConnect().sendRawTransaction(tx);
     }
+
+    public String takeOrder(String authId, String receiveAddress, byte[] userPk) throws Exception {
+        OntSdk ontSdk = getOntSdk();
+
+        Account account = new Account(userPk, ontSdk.getWalletMgr().getSignatureScheme());
+
+        List args1 = new ArrayList();
+        args1.add(Helper.hexToBytes(authId));
+        args1.add(Address.decodeBase58(receiveAddress).toArray());
+        args1.add(1);
+        args1.add(Address.decodeBase58(configParam.OJ_ADDRESS).toArray());
+
+        List<Object> paramList = new ArrayList<>();
+        paramList.add("takeOrder".getBytes());
+        paramList.add(args1);
+        byte[] params = BuildParams.createCodeParamsScript(paramList);
+        Transaction tx = ontSdk.vm().makeInvokeCodeTransaction(Helper.reverse(configParam.MP_CONTRACT), null, params, configParam.PAYER_ADDRESS, Constant.GAS_LIMIT, Constant.GAS_PRICE);
+
+        byte[] payer = Account.getPrivateKeyFromWIF(configParam.PAYER_WIF);
+        Account payerAcct = new Account(payer, ontSdk.getWalletMgr().getSignatureScheme());
+
+        ontSdk.addSign(tx, account);
+        ontSdk.addSign(tx, payerAcct);
+        ontSdk.getConnect().sendRawTransaction(tx);
+
+        return tx.hash().toString();
+    }
+
+    public String regIdAndAuth(List<String> dataOntIdList, List<String> controllers, String userOntId, byte[] userPk) throws Exception {
+        OntSdk ontSdk = getOntSdk();
+
+        OutputStream groupOutputStream = new ByteArrayOutputStream();
+
+        BinaryWriter groupWriter = new BinaryWriter(groupOutputStream);
+        HelperUtil.writeBigInt(groupWriter, controllers.size());
+        for (String member : controllers) {
+            groupWriter.writeVarBytes(member.getBytes());
+        }
+        HelperUtil.writeBigInt(groupWriter, 1);
+
+        OutputStream signerOutputStream = new ByteArrayOutputStream();
+        BinaryWriter signerWriter = new BinaryWriter(signerOutputStream);
+        HelperUtil.writeBigInt(signerWriter, 1);
+
+        signerWriter.writeVarBytes(userOntId.getBytes());
+        HelperUtil.writeBigInt(signerWriter, 1);
+
+        List args2 = new ArrayList();
+        for (String dataOntId : dataOntIdList) {
+            List args3 = new ArrayList();
+            List ojList = new ArrayList();
+            ojList.add(Address.decodeBase58(configParam.OJ_ADDRESS).toArray());
+            args3.add(dataOntId.getBytes());
+            args3.add("OBDS".getBytes());
+            args3.add("openbase dataset".getBytes());
+            args3.add(100000000000L);
+            args3.add(0);
+            args3.add(1);
+            args3.add(1);
+            args3.add(0);
+            args3.add(Helper.hexToBytes(configParam.DATA_TOKEN_CONTRACT));
+            args3.add(Address.decodeBase58(userOntId.substring(8)).toArray());
+            args3.add(Address.decodeBase58(configParam.OJ_ADDRESS).toArray());
+            args3.add(ojList);
+
+            args2.add(args3);
+        }
+
+        List<Object> paramList = new ArrayList<>();
+        paramList.add("reg_ids_and_auth_order".getBytes());
+        List args1 = new ArrayList();
+        args1.add(args2);
+        args1.add(((ByteArrayOutputStream) groupOutputStream).toByteArray());
+        args1.add(((ByteArrayOutputStream) signerOutputStream).toByteArray());
+        paramList.add(args1);
+        byte[] params = BuildParams.createCodeParamsScript(paramList);
+        Transaction tx = ontSdk.vm().makeInvokeCodeTransaction(Helper.reverse(configParam.DATA_CONTRACT), null, params, configParam.PAYER_ADDRESS, Constant.GAS_LIMIT, Constant.GAS_PRICE);
+
+        Account account = new Account(userPk, ontSdk.getWalletMgr().getSignatureScheme());
+        ontSdk.addSign(tx, account);
+
+        byte[] payer = Account.getPrivateKeyFromWIF(configParam.PAYER_WIF);
+        Account payerAcct = new Account(payer, ontSdk.getWalletMgr().getSignatureScheme());
+
+        ontSdk.addSign(tx, payerAcct);
+        ontSdk.getConnect().sendRawTransaction(tx);
+        return tx.hash().toString();
+    }
+
+    public String consumeToken(Long tokenId, byte[] userPk) throws Exception {
+        OntSdk ontSdk = getOntSdk();
+
+        Account account = new Account(userPk, ontSdk.getWalletMgr().getSignatureScheme());
+
+        List args1 = new ArrayList();
+        args1.add(tokenId);
+
+        List<Object> paramList = new ArrayList<>();
+        paramList.add("consumeToken".getBytes());
+        paramList.add(args1);
+        byte[] params = BuildParams.createCodeParamsScript(paramList);
+        Transaction tx = ontSdk.vm().makeInvokeCodeTransaction(Helper.reverse(configParam.DATA_TOKEN_CONTRACT), null, params, configParam.PAYER_ADDRESS, Constant.GAS_LIMIT, Constant.GAS_PRICE);
+
+        byte[] payer = Account.getPrivateKeyFromWIF(configParam.PAYER_WIF);
+        Account payerAcct = new Account(payer, ontSdk.getWalletMgr().getSignatureScheme());
+
+        ontSdk.addSign(tx, account);
+        ontSdk.addSign(tx, payerAcct);
+        ontSdk.getConnect().sendRawTransaction(tx);
+
+        return tx.hash().toString();
+    }
 }

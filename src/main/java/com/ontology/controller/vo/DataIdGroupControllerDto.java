@@ -5,6 +5,7 @@ import lombok.Data;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 @Data
@@ -17,4 +18,7 @@ public class DataIdGroupControllerDto {
     private List<String> dataIdList;
     @ApiModelProperty(name="version",value = "version")
     private String version;
+    @ApiModelProperty(name="isDataset",value = "isDataset")
+    @NotNull
+    private Boolean isDataset;
 }
