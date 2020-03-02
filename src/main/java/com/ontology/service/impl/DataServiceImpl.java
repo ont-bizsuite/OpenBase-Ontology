@@ -29,6 +29,8 @@ public class DataServiceImpl implements DataService {
     private TxThread txThread;
     @Autowired
     private MyJWTUtils myJWTUtils;
+    @Autowired
+    private ConfigParam configParam;
 
     @Override
     public String download(String action, String userId, String dataId, Long amount) throws Exception {
@@ -42,6 +44,9 @@ public class DataServiceImpl implements DataService {
         }
         String version = dataAuth.getVersion();
 
+        if (StringUtils.isEmpty(userId)) {
+            userId = configParam.ANONYMOUS_VISITOR_ID;
+        }
         String[] userIds = new String[]{userId};
         byte[] userPk = rootKey.generateKeys(RootKeyUtil.userKey, userIds)[0];
         String userOntId = sdkUtil.getOntId(userPk);
@@ -57,8 +62,8 @@ public class DataServiceImpl implements DataService {
 
         // take order with 0 pay
         String hash = sdkUtil.takeOrder(authId, receiveAddress, userPk);
-        log.info("takeOrder:{}",hash);
-        txThread.useTokenAndDistributePoint(hash, userPk, dataOntId,amount);
+        log.info("takeOrder:{}", hash);
+        txThread.useTokenAndDistributePoint(hash, userPk, dataOntId, amount);
 
         // generate jwt
         String token = myJWTUtils.signAccess(userId, dataId);

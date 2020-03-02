@@ -9,7 +9,6 @@ import javax.validation.constraints.NotNull;
 @Data
 public class DownloadDto {
     @ApiModelProperty(name="userId",value = "userId",required = true)
-    @NotBlank
     private String userId;
     @ApiModelProperty(name="dataId",value = "dataId",required = true)
     @NotBlank
