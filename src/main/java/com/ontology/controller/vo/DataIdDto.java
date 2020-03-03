@@ -14,7 +14,6 @@ public class DataIdDto {
     @NotBlank
     private String dataId;
     @ApiModelProperty(name="newVersion",value = "newVersion",required = true)
-    @NotBlank
     private String newVersion;
 
     @ApiModelProperty(name="oldVersion",value = "oldVersion")
