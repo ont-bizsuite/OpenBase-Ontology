@@ -44,7 +44,7 @@ public class HonorPointController {
     }
 
     @ApiOperation(value = "distribute Multi Point", notes = "distribute Multi Point", httpMethod = "POST")
-    @PostMapping
+    @PostMapping("/multi")
     public Result distributeMulti(@Valid @RequestBody MultiPointDto dto) throws Exception {
         String action = "distributeMultiPoint";
         List<DataVersionDto> dataIds = dto.getDataIds();
