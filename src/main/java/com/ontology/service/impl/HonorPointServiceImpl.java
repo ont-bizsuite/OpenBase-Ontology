@@ -1,5 +1,6 @@
 package com.ontology.service.impl;
 
+import com.ontology.controller.vo.DataVersionDto;
 import com.ontology.service.HonorPointService;
 import com.ontology.utils.*;
 import lombok.extern.slf4j.Slf4j;
@@ -7,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import javax.validation.constraints.NotBlank;
 import java.util.List;
 
 @Service
@@ -38,10 +40,21 @@ public class HonorPointServiceImpl implements HonorPointService {
             throw new Exception();
         }
         for (String controller : controllers) {
-            log.info("controller:{}",controller);
+            log.info("controller:{}", controller);
             // invoke contract to distribute point
             sdkUtil.distributeHonorPoint(controller.substring(8), amount);
         }
         return null;
     }
+
+    @Override
+    public String distributeMulti(String action, String userId, List<DataVersionDto> dataIds, Long amount) throws Exception {
+        for (DataVersionDto dto : dataIds) {
+            String version = dto.getVersion() == null ? "" : dto.getVersion();
+            String dataId = dto.getDataId();
+            distribute(action,userId,dataId,version,amount);
+        }
+        return null;
+    }
+
 }

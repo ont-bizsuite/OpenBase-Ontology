@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
+import java.util.List;
 
 
 @Api(tags = "honor point api")
@@ -38,6 +40,17 @@ public class HonorPointController {
         Long amount = dto.getAmount();
         String userId = dto.getUserId();
         String hash = honorPointService.distribute(action, userId, dataId, version, amount);
+        return new Result(action, ErrorInfo.SUCCESS.code(), ErrorInfo.SUCCESS.descEN(), ErrorInfo.SUCCESS.descEN());
+    }
+
+    @ApiOperation(value = "distribute Multi Point", notes = "distribute Multi Point", httpMethod = "POST")
+    @PostMapping
+    public Result distributeMulti(@Valid @RequestBody MultiPointDto dto) throws Exception {
+        String action = "distributeMultiPoint";
+        List<DataVersionDto> dataIds = dto.getDataIds();
+        Long amount = dto.getAmount();
+        String userId = dto.getUserId();
+        String hash = honorPointService.distributeMulti(action, userId, dataIds, amount);
         return new Result(action, ErrorInfo.SUCCESS.code(), ErrorInfo.SUCCESS.descEN(), ErrorInfo.SUCCESS.descEN());
     }
 
