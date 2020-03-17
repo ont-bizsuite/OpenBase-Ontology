@@ -16,6 +16,6 @@ public interface OntIdService {
 
     String updateDataOntId(String action, String userId, String dataId, String newVersion, String oldVersion) throws Exception;
 
-    List<DataIdResp> registerMultiDataOntIdWithGroupController(String action, List<String> userIdList, List<String> dataIdList, String version, Boolean isDataset) throws Exception;
+    List<DataIdResp> registerMultiDataOntIdWithGroupController(String action, List<String> userIdList, List<String> dataIdList, String version, Integer isDataset) throws Exception;
 
 }

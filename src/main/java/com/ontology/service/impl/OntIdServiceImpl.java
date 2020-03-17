@@ -133,7 +133,7 @@ public class OntIdServiceImpl implements OntIdService {
     }
 
     @Override
-    public List<DataIdResp> registerMultiDataOntIdWithGroupController(String action, List<String> userIdList, List<String> dataIdList, String version, Boolean isDataset) throws Exception {
+    public List<DataIdResp> registerMultiDataOntIdWithGroupController(String action, List<String> userIdList, List<String> dataIdList, String version, Integer isDataset) throws Exception {
         Boolean registerDataset = false;
         List<String> controllers = new ArrayList<>();
         for (String userId : userIdList) {
@@ -161,7 +161,7 @@ public class OntIdServiceImpl implements OntIdService {
             resp.setDataOntId(dataOntId);
             resps.add(resp);
 
-            if (isDataset) {
+            if (Constant.IS_DATASET.equals(isDataset)) {
                 DataAuth record = dataAuthMapper.selectByPrimaryKey(dataId);
                 if (record == null) {
                     DataAuth dataAuth = new DataAuth();
@@ -184,7 +184,7 @@ public class OntIdServiceImpl implements OntIdService {
 
             }
         }
-        if (isDataset) {
+        if (Constant.IS_DATASET.equals(isDataset)) {
             // register dataset and auth download
             if (registerDataset) {
                 String hash = sdkUtil.regIdAndAuth(dataOntIdList, controllers, controllers.get(0), userPk);

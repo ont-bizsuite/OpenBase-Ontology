@@ -63,7 +63,7 @@ public class OntIdController {
         List<String> userIdList = dto.getUserIdList();
         List<String> dataIdList = dto.getDataIdList();
         String version = dto.getVersion() == null ? "" : dto.getVersion();
-        Boolean isDataset = dto.getIsDataset();
+        Integer isDataset = dto.getIsDataset();
         List<DataIdResp> dataOntId = ontIdService.registerMultiDataOntIdWithGroupController(action, userIdList, dataIdList, version, isDataset);
         return new Result(action, ErrorInfo.SUCCESS.code(), ErrorInfo.SUCCESS.descEN(), dataOntId);
     }
