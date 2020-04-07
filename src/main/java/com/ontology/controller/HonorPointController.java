@@ -39,19 +39,30 @@ public class HonorPointController {
         String version = dto.getVersion() == null ? "" : dto.getVersion();
         Long amount = dto.getAmount();
         String userId = dto.getUserId();
-        String hash = honorPointService.distribute(action, userId, dataId, version, amount);
+        honorPointService.distribute(action, userId, dataId, version, amount);
         return new Result(action, ErrorInfo.SUCCESS.code(), ErrorInfo.SUCCESS.descEN(), ErrorInfo.SUCCESS.descEN());
     }
 
-    @ApiOperation(value = "distribute Multi Point", notes = "distribute Multi Point", httpMethod = "POST")
-    @PostMapping("/multi")
-    public Result distributeMulti(@Valid @RequestBody MultiPointDto dto) throws Exception {
-        String action = "distributeMultiPoint";
-        List<DataVersionDto> dataIds = dto.getDataIds();
+//    @ApiOperation(value = "distribute Multi Point", notes = "distribute Multi Point", httpMethod = "POST")
+//    @PostMapping("/multi")
+//    public Result distributeMulti(@Valid @RequestBody MultiPointDto dto) throws Exception {
+//        String action = "distributeMultiPoint";
+//        List<DataVersionDto> dataIds = dto.getDataIds();
+//        Long amount = dto.getAmount();
+//        String userId = dto.getUserId();
+//        honorPointService.distributeMulti(action, userId, dataIds, amount);
+//        return new Result(action, ErrorInfo.SUCCESS.code(), ErrorInfo.SUCCESS.descEN(), ErrorInfo.SUCCESS.descEN());
+//    }
+
+    @ApiOperation(value = "distribute Honor Point for auditor", notes = "distribute Honor Point for auditor", httpMethod = "POST")
+    @PostMapping("/auditor")
+    public Result distributeAuditor(@Valid @RequestBody AuditPointDto dto) throws Exception {
+        String action = "distributePointToAuditor";
+        List<String> userIds = dto.getUserIds();
+        String dataId = dto.getDataId();
+        String version = dto.getVersion() == null ? "" : dto.getVersion();
         Long amount = dto.getAmount();
-        String userId = dto.getUserId();
-        String hash = honorPointService.distributeMulti(action, userId, dataIds, amount);
+        honorPointService.distributePointToAuditor(action, userIds, dataId, version, amount);
         return new Result(action, ErrorInfo.SUCCESS.code(), ErrorInfo.SUCCESS.descEN(), ErrorInfo.SUCCESS.descEN());
     }
-
 }

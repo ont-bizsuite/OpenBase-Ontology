@@ -44,8 +44,8 @@ public class TxThread {
                         Object statesObj = notify.get("States");
 
                         JSONArray states = (JSONArray) statesObj;
-                         tokenId = (Long.parseLong(Helper.reverse(states.getString(6)), 16));
-                         break;
+                        tokenId = (Long.parseLong(Helper.reverse(states.getString(6)), 16));
+                        break;
                     }
                 }
                 break;
@@ -53,7 +53,7 @@ public class TxThread {
         }
 
         // consume token
-        String consumeTokenHash = sdkUtil.consumeToken(tokenId,userPk);
+        String consumeTokenHash = sdkUtil.consumeToken(tokenId, userPk);
 
 
         // distribute honor point
@@ -93,6 +93,22 @@ public class TxThread {
                 }
                 break;
             }
+        }
+    }
+
+    @Async("synTaskExecutor")
+    public void distributeByDataIdTimes(List<String> controllers, Integer times, Long amount) throws Exception {
+        for (String controller : controllers) {
+            // invoke contract to distribute point
+            sdkUtil.distributeHonorPoint(controller.substring(8), amount * times);
+        }
+    }
+
+    @Async("synTaskExecutor")
+    public void distributePointToUsers(List<String> addressList, Long amount) throws Exception {
+        for (String address : addressList) {
+            // invoke contract to distribute point
+            sdkUtil.distributeHonorPoint(address, amount);
         }
     }
 }

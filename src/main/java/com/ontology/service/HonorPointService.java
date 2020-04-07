@@ -9,7 +9,9 @@ public interface HonorPointService {
 
     Long queryPoint(String action, String userId) throws Exception;
 
-    String distribute(String action, String userId, String dataId, String version, Long amount) throws Exception;
+    void distribute(String action, String userId, String dataId, String version, Long amount) throws Exception;
 
-    String distributeMulti(String action, String userId, List<DataVersionDto> dataIds, Long amount) throws Exception;
+    void distributeMulti(String action, String userId, List<DataVersionDto> dataIds, Long amount) throws Exception;
+
+    void distributePointToAuditor(String action, List<String> userIds, String dataId, String version, Long amount) throws Exception;
 }
