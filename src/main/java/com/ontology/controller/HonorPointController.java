@@ -3,6 +3,7 @@ package com.ontology.controller;
 import com.ontology.bean.Result;
 import com.ontology.controller.vo.*;
 import com.ontology.service.*;
+import com.ontology.utils.Constant;
 import com.ontology.utils.ErrorInfo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -56,13 +57,9 @@ public class HonorPointController {
 
     @ApiOperation(value = "distribute Honor Point for auditor", notes = "distribute Honor Point for auditor", httpMethod = "POST")
     @PostMapping("/auditor")
-    public Result distributeAuditor(@Valid @RequestBody AuditPointDto dto) throws Exception {
-        String action = "distributePointToAuditor";
-        List<String> userIds = dto.getUserIds();
-        String dataId = dto.getDataId();
-        String version = dto.getVersion() == null ? "" : dto.getVersion();
-        Long amount = dto.getAmount();
-        honorPointService.distributePointToAuditor(action, userIds, dataId, version, amount);
+    public Result distributeAuditor(@Valid @RequestBody List<AuditPointDto> reqList) throws Exception {
+        String action = Constant.AUDITOR_ACTION;
+        honorPointService.cacheDistributePointToAuditor(action, reqList);
         return new Result(action, ErrorInfo.SUCCESS.code(), ErrorInfo.SUCCESS.descEN(), ErrorInfo.SUCCESS.descEN());
     }
 }

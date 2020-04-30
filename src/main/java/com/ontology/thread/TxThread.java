@@ -104,7 +104,7 @@ public class TxThread {
         }
     }
 
-    @Async("synTaskExecutor")
+//    @Async("synTaskExecutor")
     public void distributePointToUsers(List<String> addressList, Long amount) throws Exception {
         for (String address : addressList) {
             // invoke contract to distribute point

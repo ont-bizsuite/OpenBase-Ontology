@@ -1,6 +1,7 @@
 package com.ontology.service;
 
 
+import com.ontology.controller.vo.AuditPointDto;
 import com.ontology.controller.vo.DataVersionDto;
 
 import java.util.List;
@@ -14,4 +15,7 @@ public interface HonorPointService {
     void distributeMulti(String action, String userId, List<DataVersionDto> dataIds, Long amount) throws Exception;
 
     void distributePointToAuditor(String action, List<String> userIds, String dataId, String version, Long amount) throws Exception;
+
+    void cacheDistributePointToAuditor(String action, List<AuditPointDto> reqList);
+
 }

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ontology.mapper.AsyncTxMapper">
+    <resultMap id="BaseResultMap" type="com.ontology.entity.AsyncTx">
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="action" jdbcType="VARCHAR" property="action"/>
+        <result column="param" jdbcType="LONGVARCHAR" property="param"/>
+        <result column="state" jdbcType="INTEGER" property="state"/>
+        <result column="tx_hash" jdbcType="VARCHAR" property="txHash"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+    </resultMap>
+
+    <insert id="insertTxList">
+        INSERT tbl_async_tx
+        VALUES
+        <foreach collection="paramList" item="param" separator=",">
+            (
+            null, #{action}, #{param}, 0, null , now()
+            )
+        </foreach>
+    </insert>
+
+    <select id="getCacheTx" resultMap="BaseResultMap">
+        SELECT * FROM tbl_async_tx
+        WHERE action = #{action}
+        AND state = #{state}
+        ORDER BY create_time
+        LIMIT #{size}
+    </select>
+</mapper>

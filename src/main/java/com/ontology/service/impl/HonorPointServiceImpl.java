@@ -1,6 +1,9 @@
 package com.ontology.service.impl;
 
+import com.alibaba.fastjson.JSON;
+import com.ontology.controller.vo.AuditPointDto;
 import com.ontology.controller.vo.DataVersionDto;
+import com.ontology.mapper.AsyncTxMapper;
 import com.ontology.service.HonorPointService;
 import com.ontology.thread.TxThread;
 import com.ontology.utils.*;
@@ -25,6 +28,8 @@ public class HonorPointServiceImpl implements HonorPointService {
 
     @Autowired
     private TxThread txThread;
+    @Autowired
+    private AsyncTxMapper asyncTxMapper;
 
     @Override
     public Long queryPoint(String action, String userId) throws Exception {
@@ -44,7 +49,6 @@ public class HonorPointServiceImpl implements HonorPointService {
         List<String> controllers = sdkUtil.getDataIdController(dataOntId);
 
         for (String controller : controllers) {
-            log.info("controller:{}", controller);
             // invoke contract to distribute point
             sdkUtil.distributeHonorPoint(controller.substring(8), amount);
         }
@@ -86,6 +90,15 @@ public class HonorPointServiceImpl implements HonorPointService {
         }
 
         txThread.distributePointToUsers(addressList, amount);
+    }
+
+    @Override
+    public void cacheDistributePointToAuditor(String action, List<AuditPointDto> reqList) {
+        List<String> paramList = new ArrayList<>();
+        for (AuditPointDto dto : reqList) {
+            paramList.add(JSON.toJSONString(dto));
+        }
+        asyncTxMapper.insertTxList(action,paramList);
     }
 
     private Map<String, Integer> combineDuplicateDataId(List<DataVersionDto> dataIds) {
